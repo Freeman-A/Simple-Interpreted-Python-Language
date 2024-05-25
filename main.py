@@ -1,15 +1,14 @@
 import sys
-from sll_interpreter import SLL_Interpreter
+from sipl_interpreter import SIPL_Interpreter
 
 
 def run_file(filename):
     with open(filename, 'r', encoding='utf-8') as file:
         lines = file.readlines()
 
-    interpreter = SLL_Interpreter()
+    interpreter = SIPL_Interpreter()
 
     for line in lines:
-
         result = interpreter.interpret(line)
         if result is not None:
             print(result)

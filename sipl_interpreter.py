@@ -1,5 +1,5 @@
-from sll_lexer import SLL_Lexer, Token
-from sll_parser import SLL_Parser, Num, BinOp, Var, Assign, ParserError
+from sipl_lexer import SIPL_Lexer, Token
+from sipl_parser import SIPL_Parser, Num, BinOp, Var, Assign, ParserError
 
 
 class Evaluator:
@@ -23,14 +23,17 @@ class Evaluator:
         return node.value
 
     def visit_binOp(self, node):
+        left_value = self.visit(node.left)
+        right_value = self.visit(node.right)
         if node.op.type == 'ADD':
-            return self.visit(node.left) + self.visit(node.right)
+            result = left_value + right_value
         elif node.op.type == 'SUB':
-            return self.visit(node.left) - self.visit(node.right)
+            result = left_value - right_value
         elif node.op.type == 'MUL':
-            return self.visit(node.left) * self.visit(node.right)
+            result = left_value * right_value
         elif node.op.type == 'DIV':
-            return self.visit(node.left) / self.visit(node.right)
+            result = left_value / right_value
+        return result
 
     def visit_var(self, node):
         var_name = node.value
@@ -45,13 +48,13 @@ class Evaluator:
         return self.variables[var_name]
 
 
-class SLL_Interpreter:
+class SIPL_Interpreter:
     def __init__(self):
         self.evaluator = Evaluator()
 
     def interpret(self, text):
-        self.lexer = SLL_Lexer(text)
-        self.parser = SLL_Parser(self.lexer)
+        self.lexer = SIPL_Lexer(text)
+        self.parser = SIPL_Parser(self.lexer)
 
         try:
             ast = self.parser.parse()

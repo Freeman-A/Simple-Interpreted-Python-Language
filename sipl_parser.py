@@ -1,4 +1,4 @@
-from sll_lexer import Token
+from sipl_lexer import Token
 
 
 class AST:
@@ -34,10 +34,12 @@ class Assign(AST):
         self.right = right
 
 
-class SLL_Parser:
+class SIPL_Parser:
     def __init__(self, lexer):
         self.lexer = lexer
         self.current_token = self.lexer.get_token()
+
+        print(self.current_token.type)
 
     def error(self):
         raise ParserError('Invalid syntax')
@@ -61,14 +63,10 @@ class SLL_Parser:
             node = self.expr()
             self.eat('CPAREN')
             return node
-        elif token.type == 'ADD':
-            self.eat('ADD')
-            node = self.factor()
-            return BinOp(Num(Token('NUMBER', 0)), token, node)
-        elif token.type == 'SUB':
+        elif token.type == 'SUB':  # Handle unary minus
             self.eat('SUB')
             node = self.factor()
-            return BinOp(Num(Token('NUMBER', 0)), token, node)
+            return BinOp(Num(Token('NUMBER', 0)), Token('SUB', '-'), node)
 
     def term(self):
         node = self.factor()
