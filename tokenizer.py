@@ -1,4 +1,6 @@
+# tokenizer.py
 class TOKENS:
+    # Token type definitions
     NUMBER = 'NUMBER'
     BADD = 'BADD'
     BSUB = 'BSUB'
@@ -8,8 +10,8 @@ class TOKENS:
     NEGINTEGER = 'NEGINTEGER'
     FLOAT = 'FLOAT'
     ASSIGNMENT = 'ASSIGNMENT'
-    BOLEANTRUE = 'BOLEANTRUE'
-    BOLEANFALSE = 'BOLEANFALSE'
+    BOOLEANTRUE = 'BOOLEANTRUE'
+    BOOLEANFALSE = 'BOOLEANFALSE'
     EQUALITY = 'EQUALITY'
     STRING = 'STRING'
     IDENTIFIER = 'IDENTIFIER'
@@ -39,7 +41,9 @@ class TOKENS:
 
 
 class Token:
-    def __init__(self, type, value, superType=None, position=None):
+    """Class representing a token with type, value, and optional superType and position."""
+
+    def __init__(self, type, value, superType=None):
         self.type = type
         self.value = value
         self.superType = superType

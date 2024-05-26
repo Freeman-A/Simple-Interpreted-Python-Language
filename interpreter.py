@@ -1,8 +1,10 @@
+# interpreter.py
 import operators
-from tokenizer import TOKENS, Token
+from tokenizer import TOKENS
 
 
 def evaluator(rpn):
+    """Evaluate a list of tokens in Reverse Polish Notation (RPN)."""
     stack = []
     results = []
 
@@ -30,4 +32,4 @@ def evaluator(rpn):
             else:
                 results.append('Error')
 
-    return results if results else 'Error'
+    return results if results else ['Error']

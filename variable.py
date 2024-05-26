@@ -1,12 +1,14 @@
 # variable.py
 from dataclasses import dataclass
-from tokenizer import TOKENS, Token
+from tokenizer import TOKENS
 
+# Global variable storage
 globalVariables = {}
 
 
 @dataclass
 class Variable:
+    """Class to represent a variable with multiple possible types."""
     name: str
     hasValue: bool = False
     strValue: str = ''
@@ -19,6 +21,7 @@ class Variable:
         return self.strValue
 
     def update(self):
+        """Update string representation based on type."""
         if self.type == TOKENS.INTEGER:
             self.strValue = str(self.intValue)
             self.floatValue = 0.0

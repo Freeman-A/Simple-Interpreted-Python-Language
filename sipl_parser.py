@@ -1,16 +1,9 @@
-from tokenizer import TOKENS, Token
-from lexxer import lexxer
-import variable
-import operators
-
-
-from tokenizer import TOKENS, Token
-from lexxer import lexxer
-import variable
-import operators
+# sipl_parser.py
+from tokenizer import TOKENS
 
 
 def siplParser(tokens):
+    """Parse tokens into Reverse Polish Notation (RPN) using the Shunting Yard algorithm."""
     stack = []
     rpn = []
 
