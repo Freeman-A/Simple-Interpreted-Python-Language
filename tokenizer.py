@@ -1,6 +1,10 @@
 # tokenizer.py
 class TOKENS:
     # Token type definitions
+    GREATER = 'GREATER'
+    GREATEREQUAL = 'GREATEREQUAL'
+    LESS = 'LESS'
+    LESSEQUAL = 'LESSEQUAL'
     NUMBER = 'NUMBER'
     BADD = 'BADD'
     BSUB = 'BSUB'

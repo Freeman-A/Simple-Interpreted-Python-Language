@@ -32,9 +32,9 @@ def lexxer(line):
             token = line[start:position]
 
             if token == 'false' or token == 'False':
-                tokens.append(Token(TOKENS.BOOLEANFALSE, token, TOKENS.VALUE))
+                tokens.append(Token(TOKENS.BOOLEANFALSE, False, TOKENS.VALUE))
             elif token == 'true' or token == 'True':
-                tokens.append(Token(TOKENS.BOOLEANTRUE, token, TOKENS.VALUE))
+                tokens.append(Token(TOKENS.BOOLEANTRUE, True, TOKENS.VALUE))
 
             elif token in TOKENS.__dict__.values():
                 tokens.append(Token(token, token))
@@ -125,6 +125,29 @@ def lexxer(line):
                 tokens.append(Token(TOKENS.WALRUS, ':=', TOKENS.OPERATOR))
                 position = end
             else:
+                position += 1
+
+        elif character == '<':
+            start = position
+            end = position + 1
+
+            if end < len(line) and line[end] == '=':
+                tokens.append(Token(TOKENS.LESSEQUAL, '<=', TOKENS.OPERATOR))
+                position += 2
+            else:
+                tokens.append(Token(TOKENS.LESS, '<', TOKENS.OPERATOR))
+                position += 1
+
+        elif character == '>':
+            start = position
+            end = position + 1
+
+            if end < len(line) and line[end] == '=':
+                tokens.append(
+                    Token(TOKENS.GREATEREQUAL, '>=', TOKENS.OPERATOR))
+                position += 2
+            else:
+                tokens.append(Token(TOKENS.GREATER, '>', TOKENS.OPERATOR))
                 position += 1
 
         elif character == '!':

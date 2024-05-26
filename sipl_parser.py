@@ -19,7 +19,9 @@ def siplParser(tokens):
         TOKENS.EQUALITY: 1,
         TOKENS.AND: 1,
         TOKENS.OR: 1,
-        TOKENS.NOT: 3  # Higher precedence for unary NOT
+        TOKENS.NOT: 3,  # Higher precedence for unary NOT
+        TOKENS.GREATER: 1,  # Add this line
+        TOKENS.LESS: 1      # Add this line
     }
 
     for token in tokens:

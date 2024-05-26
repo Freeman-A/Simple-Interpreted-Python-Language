@@ -26,6 +26,10 @@ def evaluator(rpn):
                 operators.binaryEquality(stack)
             elif token.type == TOKENS.NOTEQUAL:
                 operators.binaryNotEqual(stack)
+            elif token.type == TOKENS.GREATER:
+                operators.binaryGreater(stack)
+            elif token.type == TOKENS.LESS:
+                operators.binaryLess(stack)
         elif token.type == TOKENS.TERMINATOR:
             if stack:
                 result_token = stack.pop()
