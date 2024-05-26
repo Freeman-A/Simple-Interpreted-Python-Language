@@ -7,21 +7,22 @@ def siplParser(tokens):
     stack = []
     rpn = []
 
+    # Handle operator precedence here using a dictionary rather than assinging precedence in the Token class
     precedence = {
-        TOKENS.BADD: 1,
+        TOKENS.BADD: 2,
         TOKENS.BSUB: 1,
-        TOKENS.BMULT: 2,
-        TOKENS.BDIV: 2,
-        TOKENS.NEGINTEGER: 3,  # High precedence for unary negation
+        TOKENS.BMULT: 3,
+        TOKENS.BDIV: 3,
+        TOKENS.NEGINTEGER: 4,
         TOKENS.LPAREN: 0,
         TOKENS.RPAREN: 0,
         TOKENS.NOTEQUAL: 1,
-        TOKENS.EQUALITY: 1,
+        TOKENS.EQUALITY: 2,
         TOKENS.AND: 1,
         TOKENS.OR: 1,
-        TOKENS.NOT: 3,  # Higher precedence for unary NOT
-        TOKENS.GREATER: 1,  # Add this line
-        TOKENS.LESS: 1      # Add this line
+        TOKENS.NOT: 4,
+        TOKENS.GREATER: 1,
+        TOKENS.LESS: 1
     }
 
     for token in tokens:
