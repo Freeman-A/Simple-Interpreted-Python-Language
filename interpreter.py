@@ -4,6 +4,7 @@ from tokenizer import TOKENS, Token
 
 def evaluator(rpn):
     stack = []
+    results = []
 
     for token in rpn:
         if token.superType == TOKENS.VALUE:
@@ -23,8 +24,10 @@ def evaluator(rpn):
             if stack:
                 result_token = stack.pop()
                 if result_token.type == TOKENS.STRING and result_token.value == 'Error':
-                    return 'Error'
+                    results.append('Error')
                 else:
-                    return result_token.value
+                    results.append(result_token.value)
+            else:
+                results.append('Error')
 
-    return 'Error'  # Return 'Error' if stack is empty or invalid
+    return results if results else 'Error'

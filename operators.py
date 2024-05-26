@@ -49,15 +49,15 @@ def binaryAdd(stack):
 
     if left.type == TOKENS.INTEGER and right.type == TOKENS.INTEGER:
         result = int(left.value) + int(right.value)
-        stack.append(Token(TOKENS.INTEGER, str(result), TOKENS.VALUE))
+        stack.append(Token(TOKENS.INTEGER, int(result), TOKENS.VALUE))
 
     elif left.type == TOKENS.FLOAT or right.type == TOKENS.FLOAT:
         result = float(left.value) + float(right.value)
-        stack.append(Token(TOKENS.FLOAT, str(result), TOKENS.VALUE))
+        stack.append(Token(TOKENS.FLOAT, float(result), TOKENS.VALUE))
 
     elif (left.type == TOKENS.FLOAT and right.type == TOKENS.INTEGER) or (left.type == TOKENS.INTEGER and right.type == TOKENS.FLOAT):
         result = float(left.value) + float(right.value)
-        stack.append(Token(TOKENS.FLOAT, str(result), TOKENS.VALUE))
+        stack.append(Token(TOKENS.FLOAT, float(result), TOKENS.VALUE))
 
     elif left.type == TOKENS.STRING and right.type == TOKENS.STRING:
         result = left.value + right.value
