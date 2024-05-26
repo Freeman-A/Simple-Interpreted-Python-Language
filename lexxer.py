@@ -29,11 +29,10 @@ def lexxer(line):
         # CHECKING FOR IDENTIFIERS AND KEYWORDS
         elif character.isalpha() or character == '_':
             start = position
-            end = position
 
             while position < len(line) and (line[position].isalnum() or line[position] == '_'):
                 position += 1
-            token = line[start:end]
+            token = line[start:position]
 
             if token.lower() in ['false', 'true']:
                 value = token.lower() == 'true'
