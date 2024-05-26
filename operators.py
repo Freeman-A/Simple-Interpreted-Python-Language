@@ -46,23 +46,18 @@ def replaceIdentifier(stack):
 def binaryAdd(stack):
     right = replaceIdentifier(stack)
     left = replaceIdentifier(stack)
-
     if left.type == TOKENS.INTEGER and right.type == TOKENS.INTEGER:
         result = int(left.value) + int(right.value)
-        stack.append(Token(TOKENS.INTEGER, int(result), TOKENS.VALUE))
-
+        stack.append(Token(TOKENS.INTEGER, str(result), TOKENS.VALUE))
     elif left.type == TOKENS.FLOAT or right.type == TOKENS.FLOAT:
         result = float(left.value) + float(right.value)
-        stack.append(Token(TOKENS.FLOAT, float(result), TOKENS.VALUE))
-
+        stack.append(Token(TOKENS.FLOAT, str(result), TOKENS.VALUE))
     elif (left.type == TOKENS.FLOAT and right.type == TOKENS.INTEGER) or (left.type == TOKENS.INTEGER and right.type == TOKENS.FLOAT):
         result = float(left.value) + float(right.value)
-        stack.append(Token(TOKENS.FLOAT, float(result), TOKENS.VALUE))
-
+        stack.append(Token(TOKENS.FLOAT, str(result), TOKENS.VALUE))
     elif left.type == TOKENS.STRING and right.type == TOKENS.STRING:
         result = left.value + right.value
         stack.append(Token(TOKENS.STRING, result, TOKENS.VALUE))
-
     else:
         result = str(left.value) + str(right.value)
         stack.append(Token(TOKENS.STRING, result, TOKENS.VALUE))
@@ -122,15 +117,12 @@ def binarySubtraction(stack):
     if left.type == TOKENS.INTEGER and right.type == TOKENS.INTEGER:
         result = int(left.value) - int(right.value)
         stack.append(Token(TOKENS.INTEGER, str(result), TOKENS.VALUE))
-
     elif left.type == TOKENS.FLOAT or right.type == TOKENS.FLOAT:
         result = float(left.value) - float(right.value)
         stack.append(Token(TOKENS.FLOAT, str(result), TOKENS.VALUE))
-
     elif (left.type == TOKENS.FLOAT and right.type == TOKENS.INTEGER) or (left.type == TOKENS.INTEGER and right.type == TOKENS.FLOAT):
         result = float(left.value) - float(right.value)
         stack.append(Token(TOKENS.FLOAT, str(result), TOKENS.VALUE))
-
     else:
         result = 'Error'
         stack.append(Token(TOKENS.STRING, result, TOKENS.VALUE))
@@ -143,15 +135,12 @@ def binaryMultiply(stack):
     if left.type == TOKENS.INTEGER and right.type == TOKENS.INTEGER:
         result = int(left.value) * int(right.value)
         stack.append(Token(TOKENS.INTEGER, str(result), TOKENS.VALUE))
-
     elif left.type == TOKENS.FLOAT or right.type == TOKENS.FLOAT:
         result = float(left.value) * float(right.value)
         stack.append(Token(TOKENS.FLOAT, str(result), TOKENS.VALUE))
-
     elif (left.type == TOKENS.FLOAT and right.type == TOKENS.INTEGER) or (left.type == TOKENS.INTEGER and right.type == TOKENS.FLOAT):
         result = float(left.value) * float(right.value)
         stack.append(Token(TOKENS.FLOAT, str(result), TOKENS.VALUE))
-
     else:
         result = 'Error'
         stack.append(Token(TOKENS.STRING, result, TOKENS.VALUE))
@@ -161,13 +150,22 @@ def binaryDivision(stack):
     right = replaceIdentifier(stack)
     left = replaceIdentifier(stack)
 
-    if (left.type == TOKENS.INTEGER and right.type == TOKENS.INTEGER) or (left.type == TOKENS.FLOAT and right.type == TOKENS.FLOAT):
-        result = float(left.value) / float(right.value)
+    try:
+
+        if (right.type == TOKENS.INTEGER and int(right.value) == 0) or (right.type == TOKENS.FLOAT and float(right.value) == 0.0):
+            stack.append(Token(TOKENS.STRING, 'Error', TOKENS.VALUE))
+            return
+
+        left_value = float(left.value) if left.type in [
+            TOKENS.INTEGER, TOKENS.FLOAT] else 0.0
+        right_value = float(right.value) if right.type in [
+            TOKENS.INTEGER, TOKENS.FLOAT] else 0.0
+
+        result = left_value / right_value
         stack.append(Token(TOKENS.FLOAT, str(result), TOKENS.VALUE))
 
-    else:
-        result = 'Error'
-        stack.append(Token(TOKENS.STRING, result, TOKENS.VALUE))
+    except ZeroDivisionError:
+        stack.append(Token(TOKENS.STRING, 'Error', TOKENS.VALUE))
 
 
 def binaryAND(stack):
