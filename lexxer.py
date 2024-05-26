@@ -112,6 +112,7 @@ def lexxer(line):
             start = position
             end = position + 1
             if end < len(line) and line[end] == '=':
+                # This line uses the new attribute
                 tokens.append(Token(TOKENS.NOTEQUAL, '!=', TOKENS.OPERATOR))
                 position += 2
             else:

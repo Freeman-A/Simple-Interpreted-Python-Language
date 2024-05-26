@@ -15,6 +15,11 @@ def siplParser(tokens):
         TOKENS.NEGINTEGER: 3,  # High precedence for unary negation
         TOKENS.LPAREN: 0,
         TOKENS.RPAREN: 0,
+        TOKENS.NOTEQUAL: 1,
+        TOKENS.EQUALITY: 1,
+        TOKENS.AND: 1,
+        TOKENS.OR: 1,
+        TOKENS.NOT: 3  # Higher precedence for unary NOT
     }
 
     for token in tokens:
