@@ -1,6 +1,7 @@
 class TOKENS:
+    NUMBER = 'NUMBER'
     BADD = 'BADD'
-    BINARYSUB = 'BINARYSUB'
+    BSUB = 'BSUB'
     BMULT = 'BMULT'
     BDIV = 'BDIV'
     INTEGER = 'INTEGER'
@@ -29,6 +30,9 @@ class TOKENS:
     ENDIF = 'endif'
     WHILE = 'while'
     FOR = 'for'
+    AND = 'AND'
+    OR = 'OR'
+    NOT = 'NOT'
     FUNCTION = 'function'
     RETURN = 'return'
     UNKNOWN = 'UNKNOWN'
