@@ -101,17 +101,16 @@ def Assingment(stack):
 
 
 def unaryNegation(stack):
-    value = replaceIdentifier(stack)
+    value = stack.pop()
 
     if value.type == TOKENS.INTEGER:
-        value.value = str(-int(value.value))
+        value = Token(TOKENS.INTEGER, str(-int(value.value)), TOKENS.VALUE)
 
     elif value.type == TOKENS.FLOAT:
-        value.value = str(-float(value.value))
+        value = Token(TOKENS.FLOAT, str(-float(value.value)), TOKENS.VALUE)
 
     else:
-        value.value = 'Error'
-        value.type = TOKENS.STRING
+        value = Token(TOKENS.STRING, 'Error', TOKENS.VALUE)
     stack.append(value)
 
 

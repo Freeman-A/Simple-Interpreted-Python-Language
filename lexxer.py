@@ -145,5 +145,4 @@ def lexxer(line):
             # Skip invalid characters
             position += 1
 
-    print("TOKENS: ", tokens)
     return tokens
