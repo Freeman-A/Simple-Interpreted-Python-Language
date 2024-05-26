@@ -28,7 +28,7 @@ def isTrue(token):
             val = True
     elif token.type == TOKENS.STRING and token.value:
         val = True
-    elif token.type == TOKENS.BOLEANTRUE:
+    elif token.type == TOKENS.BOOLEANTRUE:
         val = True
     return val
 
@@ -82,12 +82,12 @@ def Assingment(stack):
         var.type = TOKENS.STRING
         var.strValue = right.value
 
-    elif right.type == TOKENS.BOLEANTRUE:
-        var.type = TOKENS.BOLEANTRUE
+    elif right.type == TOKENS.BOOLEANTRUE:
+        var.type = TOKENS.BOOLEANTRUE
         var.strValue = int(right.value)
 
-    elif right.type == TOKENS.BOLEANFALSE:
-        var.type = TOKENS.BOLEANFALSE
+    elif right.type == TOKENS.BOOLEANFALSE:
+        var.type = TOKENS.BOOLEANFALSE
         var.strValue = int(right.value)
 
     var.update()
@@ -177,10 +177,11 @@ def binaryAND(stack):
 
     result = logicalLeft and logicalRight
     if result:
-        stack.append(Token(TOKENS.BOLEANTRUE, TOKENS.BOLEANTRUE, TOKENS.VALUE))
+        stack.append(Token(TOKENS.BOOLEANTRUE,
+                     TOKENS.BOOLEANTRUE, TOKENS.VALUE))
     else:
-        stack.append(Token(TOKENS.BOLEANFALSE,
-                     TOKENS.BOLEANFALSE, TOKENS.VALUE))
+        stack.append(Token(TOKENS.BOOLEANFALSE,
+                     TOKENS.BOOLEANFALSE, TOKENS.VALUE))
 
 
 def binaryOR(stack):
@@ -192,251 +193,176 @@ def binaryOR(stack):
 
     result = logicalLeft or logicalRight
     if result:
-        stack.append(Token(TOKENS.BOLEANTRUE, TOKENS.BOLEANTRUE, TOKENS.VALUE))
+        stack.append(Token(TOKENS.BOOLEANTRUE,
+                     TOKENS.BOOLEANTRUE, TOKENS.VALUE))
     else:
-        stack.append(Token(TOKENS.BOLEANFALSE,
-                     TOKENS.BOLEANFALSE, TOKENS.VALUE))
+        stack.append(Token(TOKENS.BOOLEANFALSE,
+                     TOKENS.BOOLEANFALSE, TOKENS.VALUE))
 
 
 def binaryNotEqual(stack):
-    right = replaceIdentifier(stack)
-    left = replaceIdentifier(stack)
+    rhs = replaceIdentifier(stack)
+    lhs = replaceIdentifier(stack)
 
-    if left.type == TOKENS.STRING and right.type == TOKENS.STRING:
-        result = left.value != right.value
+    # Strictly String Case:
+    if lhs.type == TOKENS.STRING and rhs.type == TOKENS.STRING:
+        result = lhs.value != rhs.value
         if result:
-            stack.append(
-                Token(TOKENS.BOLEANTRUE, TOKENS.BOLEANTRUE, TOKENS.VALUE))
+            stack.append(Token(TOKENS.BOOLEANTRUE, True, TOKENS.VALUE))
         else:
-            stack.append(Token(TOKENS.BOLEANFALSE,
-                         TOKENS.BOLEANFALSE, TOKENS.VALUE))
-
-    elif left.type == TOKENS.INTEGER and right.type == TOKENS.INTEGER:
-        result = int(left.value) != int(right.value)
+            stack.append(Token(TOKENS.BOOLEANFALSE, False, TOKENS.VALUE))
+    # Strictly Integer Case:
+    elif lhs.type == TOKENS.INTEGER and rhs.type == TOKENS.INTEGER:
+        result = int(lhs.value) != int(lhs.value)
         if result:
-            stack.append(
-                Token(TOKENS.BOLEANTRUE, TOKENS.BOLEANTRUE, TOKENS.VALUE))
+            stack.append(Token(TOKENS.BOOLEANTRUE, True, TOKENS.VALUE))
         else:
-            stack.append(Token(TOKENS.BOLEANFALSE,
-                         TOKENS.BOLEANFALSE, TOKENS.VALUE))
-
-    elif left.type == TOKENS.FLOAT or right.type == TOKENS.FLOAT:
-        result = float(left.value) != float(right.value)
+            stack.append(Token(TOKENS.BOOLEANFALSE, False, TOKENS.VALUE))
+    # Strictly Float Case:
+    elif lhs.type == TOKENS.FLOAT and rhs.type == TOKENS.FLOAT:
+        result = float(lhs.value) != float(lhs.value)
         if result:
-            stack.append(
-                Token(TOKENS.BOLEANTRUE, TOKENS.BOLEANTRUE, TOKENS.VALUE))
+            stack.append(Token(TOKENS.BOOLEANTRUE, True, TOKENS.VALUE))
         else:
-            stack.append(Token(TOKENS.BOLEANFALSE,
-                         TOKENS.BOLEANFALSE, TOKENS.VALUE))
-
-    elif left.type == TOKENS.BOLEANTRUE or right.type == TOKENS.BOLEANFALSE:
-        result = right.type != left.type
+            stack.append(Token(TOKENS.BOOLEANFALSE, False, TOKENS.VALUE))
+    # Strictly Logical Case:
+    elif (lhs.type == TOKENS.BOOLEANTRUE or lhs.type == TOKENS.BOOLEANFALSE) and \
+            (rhs.type == TOKENS.BOOLEANTRUE or rhs.type == TOKENS.BOOLEANFALSE):
+        result = rhs.type != lhs.type
         if result:
-            stack.append(
-                Token(TOKENS.BOLEANTRUE, TOKENS.BOLEANTRUE, TOKENS.VALUE))
+            stack.append(Token(TOKENS.BOOLEANTRUE, True, TOKENS.VALUE))
         else:
-            stack.append(Token(TOKENS.BOLEANFALSE,
-                         TOKENS.BOLEANFALSE, TOKENS.VALUE))
-
-    elif left.type == TOKENS.INTEGER and right.type == TOKENS.FLOAT:
-        result = float(left.value) != float(right.value)
+            stack.append(Token(TOKENS.BOOLEANFALSE, False, TOKENS.VALUE))
+    # Mixed Cases:
+        # int float
+    elif (lhs.type == TOKENS.INTEGER or lhs.type == TOKENS.FLOAT) and \
+            (rhs.type == TOKENS.INTEGER or rhs.type == TOKENS.FLOAT):
+        result = float(lhs.value) != float(lhs.value)
         if result:
-            stack.append(
-                Token(TOKENS.BOLEANTRUE, TOKENS.BOLEANTRUE, TOKENS.VALUE))
+            stack.append(Token(TOKENS.BOOLEANTRUE, True, TOKENS.VALUE))
         else:
-            stack.append(Token(TOKENS.BOLEANFALSE,
-                         TOKENS.BOLEANFALSE, TOKENS.VALUE))
-
-    elif left.type == TOKENS.FLOAT and right.type == TOKENS.INTEGER:
-        result = float(left.value) != float(right.value)
+            stack.append(Token(TOKENS.BOOLEANFALSE, False, TOKENS.VALUE))
+        # int string
+    elif (lhs.type == TOKENS.INTEGER or lhs.type == TOKENS.STRING) and \
+            (rhs.type == TOKENS.STRING or rhs.type == TOKENS.INTEGER):
+        result = str(lhs.value) != str(lhs.value)
         if result:
-            stack.append(
-                Token(TOKENS.BOLEANTRUE, TOKENS.BOLEANTRUE, TOKENS.VALUE))
+            stack.append(Token(TOKENS.BOOLEANTRUE, True, TOKENS.VALUE))
         else:
-            stack.append(Token(TOKENS.BOLEANFALSE,
-                         TOKENS.BOLEANFALSE, TOKENS.VALUE))
-
-    elif left.type == TOKENS.INTEGER and right.type == TOKENS.STRING:
-        result = int(left.value) != int(right.value)
+            stack.append(Token(TOKENS.BOOLEANFALSE, False, TOKENS.VALUE))
+        # float string
+    elif (lhs.type == TOKENS.FLOAT or lhs.type == TOKENS.STRING) and \
+            (rhs.type == TOKENS.STRING or rhs.type == TOKENS.FLOAT):
+        result = str(lhs.value) != str(lhs.value)
         if result:
-            stack.append(
-                Token(TOKENS.BOLEANTRUE, TOKENS.BOLEANTRUE, TOKENS.VALUE))
+            stack.append(Token(TOKENS.BOOLEANTRUE, True, TOKENS.VALUE))
         else:
-            stack.append(Token(TOKENS.BOLEANFALSE,
-                         TOKENS.BOLEANFALSE, TOKENS.VALUE))
-
-    elif left.type == TOKENS.STRING and right.type == TOKENS.INTEGER:
-        result = int(left.value) != int(right.value)
+            stack.append(Token(TOKENS.BOOLEANFALSE, False, TOKENS.VALUE))
+        # logical int
+    elif (lhs.type == TOKENS.INTEGER or lhs.type == TOKENS.BOOLEANTRUE or lhs.type == TOKENS.BOOLEANFALSE) and \
+            (rhs.type == TOKENS.INTEGER or rhs.type == TOKENS.BOOLEANTRUE or rhs.type == TOKENS.BOOLEANFALSE):
+        result = not (isTrue(lhs)) or not (isTrue(rhs))
         if result:
-            stack.append(
-                Token(TOKENS.BOLEANTRUE, TOKENS.BOLEANTRUE, TOKENS.VALUE))
+            stack.append(Token(TOKENS.BOOLEANTRUE, True, TOKENS.VALUE))
         else:
-            stack.append(Token(TOKENS.BOLEANFALSE,
-                         TOKENS.BOLEANFALSE, TOKENS.VALUE))
-
-    elif left.type == TOKENS.FLOAT and right.type == TOKENS.STRING:
-        result = float(left.value) != float(right.value)
+            stack.append(Token(TOKENS.BOOLEANFALSE, False, TOKENS.VALUE))
+        # logical float
+    elif (lhs.type == TOKENS.FLOAT or lhs.type == TOKENS.BOOLEANTRUE or lhs.type == TOKENS.BOOLEANFALSE) and \
+            (rhs.type == TOKENS.FLOAT or rhs.type == TOKENS.BOOLEANTRUE or rhs.type == TOKENS.BOOLEANFALSE):
+        result = not (isTrue(lhs)) or not (isTrue(rhs))
         if result:
-            stack.append(
-                Token(TOKENS.BOLEANTRUE, TOKENS.BOLEANTRUE, TOKENS.VALUE))
+            stack.append(Token(TOKENS.BOOLEANTRUE, True, TOKENS.VALUE))
         else:
-            stack.append(Token(TOKENS.BOLEANFALSE,
-                         TOKENS.BOLEANFALSE, TOKENS.VALUE))
-
-    elif left.type == TOKENS.STRING and right.type == TOKENS.FLOAT:
-        result = float(left.value) != float(right.value)
+            stack.append(Token(TOKENS.BOOLEANFALSE, False, TOKENS.VALUE))
+        # logical string
+    elif (lhs.type == TOKENS.STRING or lhs.type == TOKENS.BOOLEANTRUE or lhs.type == TOKENS.BOOLEANFALSE) and \
+            (rhs.type == TOKENS.STRING or rhs.type == TOKENS.BOOLEANTRUE or rhs.type == TOKENS.BOOLEANFALSE):
+        result = not (isTrue(lhs)) or not (isTrue(rhs))
         if result:
-            stack.append(
-                Token(TOKENS.BOLEANTRUE, TOKENS.BOLEANTRUE, TOKENS.VALUE))
+            stack.append(Token(TOKENS.BOOLEANTRUE, True, TOKENS.VALUE))
         else:
-            stack.append(Token(TOKENS.BOLEANFALSE,
-                         TOKENS.BOLEANFALSE, TOKENS.VALUE))
-
-    elif left.type == TOKENS.INTEGER or left.type == TOKENS.BOLEANTRUE:
-        result = int(left.value) != int(right.value)
-        if result:
-            stack.append(
-                Token(TOKENS.BOLEANTRUE, TOKENS.BOLEANTRUE, TOKENS.VALUE))
-        else:
-            stack.append(Token(TOKENS.BOLEANFALSE,
-                         TOKENS.BOLEANFALSE, TOKENS.VALUE))
-
-    elif left.type == TOKENS.FLOAT or left.type == TOKENS.BOLEANTRUE:
-        result = float(left.value) != float(right.value)
-        if result:
-            stack.append(
-                Token(TOKENS.BOLEANTRUE, TOKENS.BOLEANTRUE, TOKENS.VALUE))
-        else:
-            stack.append(Token(TOKENS.BOLEANFALSE,
-                         TOKENS.BOLEANFALSE, TOKENS.VALUE))
-
-    elif left.type == TOKENS.STRING or left.type == TOKENS.BOLEANTRUE:
-        result = left.value != right.value
-        if result:
-            stack.append(
-                Token(TOKENS.BOLEANTRUE, TOKENS.BOLEANTRUE, TOKENS.VALUE))
-        else:
-            stack.append(Token(TOKENS.BOLEANFALSE,
-                         TOKENS.BOLEANFALSE, TOKENS.VALUE))
+            stack.append(Token(TOKENS.BOOLEANFALSE, False, TOKENS.VALUE))
 
 
 def binaryEquality(stack):
-    right = replaceIdentifier(stack)
-    left = replaceIdentifier(stack)
+    rhs = replaceIdentifier(stack)
+    lhs = replaceIdentifier(stack)
 
-    if left.type == TOKENS.STRING and right.type == TOKENS.STRING:
-        result = left.value == right.value
+    # Strictly String Case:
+    if lhs.type == TOKENS.STRING and rhs.type == TOKENS.STRING:
+        result = lhs.value == rhs.value
         if result:
-            stack.append(
-                Token(TOKENS.BOLEANTRUE, TOKENS.BOLEANTRUE, TOKENS.VALUE))
+            stack.append(Token(TOKENS.BOOLEANTRUE, True, TOKENS.VALUE))
         else:
-            stack.append(Token(TOKENS.BOLEANFALSE,
-                         TOKENS.BOLEANFALSE, TOKENS.VALUE))
-
-    elif left.type == TOKENS.INTEGER and right.type == TOKENS.INTEGER:
-        result = int(left.value) == int(right.value)
+            stack.append(Token(TOKENS.BOOLEANFALSE, False, TOKENS.VALUE))
+    # Strictly Integer Case:
+    elif lhs.type == TOKENS.INTEGER and rhs.type == TOKENS.INTEGER:
+        result = int(lhs.value) == int(lhs.value)
         if result:
-            stack.append(
-                Token(TOKENS.BOLEANTRUE, TOKENS.BOLEANTRUE, TOKENS.VALUE))
+            stack.append(Token(TOKENS.BOOLEANTRUE, TOKENS.VALUE))
         else:
-            stack.append(Token(TOKENS.BOLEANFALSE,
-                         TOKENS.BOLEANFALSE, TOKENS.VALUE))
-
-    elif left.type == TOKENS.FLOAT or right.type == TOKENS.FLOAT:
-        result = float(left.value) == float(right.value)
+            stack.append(Token(TOKENS.BOOLEANFALSE, False, TOKENS.VALUE))
+    # Strictly Float Case:
+    elif lhs.type == TOKENS.FLOAT and rhs.type == TOKENS.FLOAT:
+        result = float(lhs.value) == float(lhs.value)
         if result:
-            stack.append(
-                Token(TOKENS.BOLEANTRUE, TOKENS.BOLEANTRUE, TOKENS.VALUE))
+            stack.append(Token(TOKENS.BOOLEANTRUE, True, TOKENS.VALUE))
         else:
-            stack.append(Token(TOKENS.BOLEANFALSE,
-                         TOKENS.BOLEANFALSE, TOKENS.VALUE))
-
-    elif left.type == TOKENS.BOLEANTRUE or right.type == TOKENS.BOLEANFALSE:
-        result = right.type == left.type
+            stack.append(Token(TOKENS.BOOLEANFALSE, False, TOKENS.VALUE))
+    # Strictly Logical Case:
+    elif (lhs.type == TOKENS.BOOLEANTRUE or lhs.type == TOKENS.BOOLEANFALSE) and \
+            (rhs.type == TOKENS.BOOLEANTRUE or rhs.type == TOKENS.BOOLEANFALSE):
+        result = rhs.type == lhs.type
         if result:
-            stack.append(
-                Token(TOKENS.BOLEANTRUE, TOKENS.BOLEANTRUE, TOKENS.VALUE))
+            stack.append(Token(TOKENS.BOOLEANTRUE, True, TOKENS.VALUE))
         else:
-            stack.append(Token(TOKENS.BOLEANFALSE,
-                         TOKENS.BOLEANFALSE, TOKENS.VALUE))
-
-    elif left.type == TOKENS.INTEGER and right.type == TOKENS.FLOAT:
-        result = float(left.value) == float(right.value)
+            stack.append(Token(TOKENS.BOOLEANFALSE, False, TOKENS.VALUE))
+    # Mixed Cases:
+    # int float
+    elif (lhs.type == TOKENS.INTEGER or lhs.type == TOKENS.FLOAT) and \
+            (rhs.type == TOKENS.INTEGER or rhs.type == TOKENS.FLOAT):
+        result = float(lhs.value) == float(lhs.value)
         if result:
-            stack.append(
-                Token(TOKENS.BOLEANTRUE, TOKENS.BOLEANTRUE, TOKENS.VALUE))
+            stack.append(Token(TOKENS.BOOLEANTRUE, True, TOKENS.VALUE))
         else:
-            stack.append(Token(TOKENS.BOLEANFALSE,
-                         TOKENS.BOLEANFALSE, TOKENS.VALUE))
-
-    elif left.type == TOKENS.FLOAT and right.type == TOKENS.INTEGER:
-        result = float(left.value) == float(right.value)
+            stack.append(Token(TOKENS.BOOLEANFALSE, False, TOKENS.VALUE))
+        # int string
+    elif (lhs.type == TOKENS.INTEGER or lhs.type == TOKENS.STRING) and \
+            (rhs.type == TOKENS.STRING or rhs.type == TOKENS.INTEGER):
+        result = str(lhs.value) == str(lhs.value)
         if result:
-            stack.append(
-                Token(TOKENS.BOLEANTRUE, TOKENS.BOLEANTRUE, TOKENS.VALUE))
+            stack.append(Token(TOKENS.BOOLEANTRUE, True, TOKENS.VALUE))
         else:
-            stack.append(Token(TOKENS.BOLEANFALSE,
-                         TOKENS.BOLEANFALSE, TOKENS.VALUE))
-
-    elif left.type == TOKENS.INTEGER and right.type == TOKENS.STRING:
-        result = int(left.value) == int(right.value)
+            stack.append(Token(TOKENS.BOOLEANFALSE, False, TOKENS.VALUE))
+        # float string
+    elif (lhs.type == TOKENS.FLOAT or lhs.type == TOKENS.STRING) and \
+            (rhs.type == TOKENS.STRING or rhs.type == TOKENS.FLOAT):
+        result = str(lhs.value) == str(lhs.value)
         if result:
-            stack.append(
-                Token(TOKENS.BOLEANTRUE, TOKENS.BOLEANTRUE, TOKENS.VALUE))
+            stack.append(Token(TOKENS.BOOLEANTRUE, True, TOKENS.VALUE))
         else:
-            stack.append(Token(TOKENS.BOLEANFALSE,
-                         TOKENS.BOLEANFALSE, TOKENS.VALUE))
-
-    elif left.type == TOKENS.STRING and right.type == TOKENS.INTEGER:
-        result = int(left.value) == int(right.value)
+            stack.append(Token(TOKENS.BOOLEANFALSE, False, TOKENS.VALUE))
+        # logical int
+    elif (lhs.type == TOKENS.INTEGER or lhs.type == TOKENS.BOOLEANTRUE or lhs.type == TOKENS.BOOLEANFALSE) and \
+            (rhs.type == TOKENS.INTEGER or rhs.type == TOKENS.BOOLEANTRUE or rhs.type == TOKENS.BOOLEANFALSE):
+        result = isTrue(lhs) and isTrue(rhs)
         if result:
-            stack.append(
-                Token(TOKENS.BOLEANTRUE, TOKENS.BOLEANTRUE, TOKENS.VALUE))
+            stack.append(Token(TOKENS.BOOLEANTRUE, True, TOKENS.VALUE))
         else:
-            stack.append(Token(TOKENS.BOLEANFALSE,
-                         TOKENS.BOLEANFALSE, TOKENS.VALUE))
-
-    elif left.type == TOKENS.FLOAT and right.type == TOKENS.STRING:
-        result = float(left.value) == float(right.value)
+            stack.append(Token(TOKENS.BOOLEANFALSE, False, TOKENS.VALUE))
+        # logical float
+    elif (lhs.type == TOKENS.FLOAT or lhs.type == TOKENS.BOOLEANTRUE or lhs.type == TOKENS.BOOLEANFALSE) and \
+            (rhs.type == TOKENS.FLOAT or rhs.type == TOKENS.BOOLEANTRUE or rhs.type == TOKENS.BOOLEANFALSE):
+        result = isTrue(lhs) and isTrue(rhs)
         if result:
-            stack.append(
-                Token(TOKENS.BOLEANTRUE, TOKENS.BOLEANTRUE, TOKENS.VALUE))
+            stack.append(Token(TOKENS.BOOLEANTRUE, True, TOKENS.VALUE))
         else:
-            stack.append(Token(TOKENS.BOLEANFALSE,
-                         TOKENS.BOLEANFALSE, TOKENS.VALUE))
-
-    elif left.type == TOKENS.STRING and right.type == TOKENS.FLOAT:
-        result = float(left.value) == float(right.value)
+            stack.append(Token(TOKENS.BOOLEANFALSE, False, TOKENS.VALUE))
+        # logical string
+    elif (lhs.type == TOKENS.STRING or lhs.type == TOKENS.BOOLEANTRUE or lhs.type == TOKENS.BOOLEANFALSE) and \
+            (rhs.type == TOKENS.STRING or rhs.type == TOKENS.BOOLEANTRUE or rhs.type == TOKENS.BOOLEANFALSE):
+        result = isTrue(lhs) and isTrue(rhs)
         if result:
-            stack.append(
-                Token(TOKENS.BOLEANTRUE, TOKENS.BOLEANTRUE, TOKENS.VALUE))
+            stack.append(Token(TOKENS.BOOLEANTRUE, True, TOKENS.VALUE))
         else:
-            stack.append(Token(TOKENS.BOLEANFALSE,
-                         TOKENS.BOLEANFALSE, TOKENS.VALUE))
-
-    elif left.type == TOKENS.INTEGER or left.type == TOKENS.BOLEANTRUE:
-        result = int(left.value) == int(right.value)
-        if result:
-            stack.append(
-                Token(TOKENS.BOLEANTRUE, TOKENS.BOLEANTRUE, TOKENS.VALUE))
-        else:
-            stack.append(Token(TOKENS.BOLEANFALSE,
-                         TOKENS.BOLEANFALSE, TOKENS.VALUE))
-
-    elif left.type == TOKENS.FLOAT or left.type == TOKENS.BOLEANTRUE:
-        result = float(left.value) == float(right.value)
-        if result:
-            stack.append(
-                Token(TOKENS.BOLEANTRUE, TOKENS.BOLEANTRUE, TOKENS.VALUE))
-        else:
-            stack.append(Token(TOKENS.BOLEANFALSE,
-                         TOKENS.BOLEANFALSE, TOKENS.VALUE))
-
-    elif left.type == TOKENS.STRING or left.type == TOKENS.BOLEANTRUE:
-        result = left.value == right.value
-        if result:
-            stack.append(
-                Token(TOKENS.BOLEANTRUE, TOKENS.BOLEANTRUE, TOKENS.VALUE))
-        else:
-            stack.append(Token(TOKENS.BOLEANFALSE,
-                         TOKENS.BOLEANFALSE, TOKENS.VALUE))
+            stack.append(Token(TOKENS.BOOLEANFALSE, False, TOKENS.VALUE))

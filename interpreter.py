@@ -22,14 +22,18 @@ def evaluator(rpn):
                 operators.binaryDivision(stack)
             elif token.type == TOKENS.NEGINTEGER:
                 operators.unaryNegation(stack)
+            elif token.type == TOKENS.EQUALITY:
+                operators.binaryEquality(stack)
+            elif token.type == TOKENS.NOTEQUAL:
+                operators.binaryNotEqual(stack)
         elif token.type == TOKENS.TERMINATOR:
             if stack:
                 result_token = stack.pop()
                 if result_token.type == TOKENS.STRING and result_token.value == 'Error':
-                    results.append('Error')
+                    results.append('Error1')
                 else:
                     results.append(result_token.value)
             else:
-                results.append('Error')
+                results.append('Error2')
 
     return results if results else ['Error']

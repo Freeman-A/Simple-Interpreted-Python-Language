@@ -26,7 +26,7 @@ def read_file():
     rpn_tokens = siplParser(tokens)
     result = evaluator(rpn_tokens)
 
-    print("\n ".join(result))  # Print result as a single line
+    print("\n".join(map(str, result)))  # Convert each item in result to string
 
 
 if __name__ == "__main__":
