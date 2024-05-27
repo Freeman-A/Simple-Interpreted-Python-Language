@@ -10,11 +10,13 @@ def lexxer(line):
     while position < len(line):
         character = line[position]
 
+        # Handle statement terminators
         if character == ';':
             tokens.append(
                 Token(TOKENS.TERMINATOR, character, TOKENS.TERMINATOR))
             position += 1
 
+        # Handle numbers (integers and floats)
         elif character.isdigit() or (character == '.' and position + 1 < len(line) and line[position + 1].isdigit()):
             start = position
             while position < len(line) and (line[position].isdigit() or line[position] == '.'):
@@ -25,45 +27,37 @@ def lexxer(line):
             else:
                 tokens.append(Token(TOKENS.INTEGER, token_value, TOKENS.VALUE))
 
+        # Handle identifiers and keywords
         elif character.isalpha():
             start = position
             while position < len(line) and line[position].isalnum():
                 position += 1
             token = line[start:position]
 
-            if token == 'false' or token == 'False':
+            if token.lower() == 'false':
                 tokens.append(Token(TOKENS.BOOLEANFALSE, False, TOKENS.VALUE))
-            elif token == 'true' or token == 'True':
+            elif token.lower() == 'true':
                 tokens.append(Token(TOKENS.BOOLEANTRUE, True, TOKENS.VALUE))
-
-            elif token in TOKENS.__dict__.values():
-                tokens.append(Token(token, token))
-                if token == 'if':
-                    tokens.append(Token(TOKENS.IF, token, TOKENS.KEYWORD))
-                elif token == 'else':
-                    tokens.append(Token(TOKENS.ELSE, token, TOKENS.KEYWORD))
-                elif token == 'while':
-                    tokens.append(Token(TOKENS.WHILE, token, TOKENS.KEYWORD))
-                elif token == 'endif':
-                    tokens.append(Token(TOKENS.ENDIF, token, TOKENS.KEYWORD))
-                elif token == 'var':
-                    tokens.append(Token(TOKENS.VAR, token, TOKENS.KEYWORD))
+            elif token.upper() in TOKENS.__dict__.keys():
+                tokens.append(Token(TOKENS.__dict__[token.upper()], token))
             else:
                 tokens.append(
                     Token(TOKENS.IDENTIFIER, token, TOKENS.IDENTIFIER))
 
+        # Handle string literals
         elif character == '\"':
             start = position
             end = position + 1
             while end < len(line) and line[end] != '\"':
                 end += 1
             if end >= len(line):
-                break
+                raise ValueError("Unterminated string literal")
             end += 1
             token = line[start + 1:end - 1]
             tokens.append(Token(TOKENS.STRING, token, TOKENS.VALUE))
             position = end
 
+        # Handle parentheses
         elif character == '(':
             tokens.append(Token(TOKENS.LPAREN, '(', TOKENS.SEPARATOR))
             position += 1
@@ -72,12 +66,16 @@ def lexxer(line):
             tokens.append(Token(TOKENS.RPAREN, ')', TOKENS.SEPARATOR))
             position += 1
 
-        elif character == '+':
-            tokens.append(Token(TOKENS.BADD, '+', TOKENS.OPERATOR))
+        # Handle operators
+        elif character == '+' or character == '–':
+            # Treat en dash '–' as minus '-'
+            character = '-' if character == '–' else character
+            tokens.append(Token(TOKENS.BADD if character ==
+                          '+' else TOKENS.BSUB, character, TOKENS.OPERATOR))
             position += 1
 
         elif character == '-':
-            if position == 0 or tokens[-1].superType == TOKENS.OPERATOR:
+            if position == 0 or tokens[-1].superType in [TOKENS.OPERATOR, TOKENS.LPAREN]:
                 tokens.append(Token(TOKENS.NEGINTEGER, "-", TOKENS.OPERATOR))
             else:
                 tokens.append(Token(TOKENS.BSUB, "-", TOKENS.OPERATOR))
@@ -91,11 +89,11 @@ def lexxer(line):
             tokens.append(Token(TOKENS.BDIV, '/', TOKENS.OPERATOR))
             position += 1
 
-        elif character == "&":
+        elif character == '&':
             tokens.append(Token(TOKENS.AND, '&', TOKENS.OPERATOR))
             position += 1
 
-        elif character == "|":
+        elif character == '|':
             tokens.append(Token(TOKENS.OR, '|', TOKENS.OPERATOR))
             position += 1
 
@@ -103,35 +101,19 @@ def lexxer(line):
             tokens.append(Token(TOKENS.NOT, '~', TOKENS.OPERATOR))
             position += 1
 
+        # Handle assignment and equality
         elif character == '=':
             start = position
-            while position < len(line) and line[position] == '=':
-                position += 1
-            token = line[start:position]
-
-            if token == '=':
-                tokens.append(Token(TOKENS.ASSIGNMENT, token, TOKENS.OPERATOR))
-            elif token == '==':
-                tokens.append(Token(TOKENS.EQUALITY, token, TOKENS.OPERATOR))
-
-        elif character == ':':
-            start = position
-            end = position
-            while end < len(line) and line[end] == '=':
-                end += 1
-            token = line[start:end]
-
-            if token == ':=':
-                tokens.append(Token(TOKENS.WALRUS, ':=', TOKENS.OPERATOR))
-                position = end
+            if position + 1 < len(line) and line[position + 1] == '=':
+                tokens.append(Token(TOKENS.EQUALITY, '==', TOKENS.OPERATOR))
+                position += 2
             else:
+                tokens.append(Token(TOKENS.ASSIGNMENT, '=', TOKENS.OPERATOR))
                 position += 1
 
+        # Handle relational operators
         elif character == '<':
-            start = position
-            end = position + 1
-
-            if end < len(line) and line[end] == '=':
+            if position + 1 < len(line) and line[position + 1] == '=':
                 tokens.append(Token(TOKENS.LESSEQUAL, '<=', TOKENS.OPERATOR))
                 position += 2
             else:
@@ -139,10 +121,7 @@ def lexxer(line):
                 position += 1
 
         elif character == '>':
-            start = position
-            end = position + 1
-
-            if end < len(line) and line[end] == '=':
+            if position + 1 < len(line) and line[position + 1] == '=':
                 tokens.append(
                     Token(TOKENS.GREATEREQUAL, '>=', TOKENS.OPERATOR))
                 position += 2
@@ -150,11 +129,9 @@ def lexxer(line):
                 tokens.append(Token(TOKENS.GREATER, '>', TOKENS.OPERATOR))
                 position += 1
 
+        # Handle not equal '!='
         elif character == '!':
-            start = position
-            end = position + 1
-
-            if end < len(line) and line[end] == '=':
+            if position + 1 < len(line) and line[position + 1] == '=':
                 tokens.append(Token(TOKENS.NOTEQUAL, '!=', TOKENS.OPERATOR))
                 position += 2
             else:
