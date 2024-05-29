@@ -29,6 +29,7 @@ def lexxer(line):
 
         # Handle identifiers and keywords
         elif character.isalpha():
+
             start = position
             while position < len(line) and line[position].isalnum():
                 position += 1
@@ -36,13 +37,19 @@ def lexxer(line):
 
             if token.lower() == 'false':
                 tokens.append(Token(TOKENS.BOOLEANFALSE, False, TOKENS.VALUE))
+
             elif token.lower() == 'true':
                 tokens.append(Token(TOKENS.BOOLEANTRUE, True, TOKENS.VALUE))
+
+            elif token.lower() == 'and': 
+                tokens.append(Token(TOKENS.AND, 'and', TOKENS.OPERATOR))
+            
+            elif token.lower() == 'or':
+                tokens.append(Token(TOKENS.OR, 'or', TOKENS.OPERATOR))
+
             elif token.upper() in TOKENS.__dict__.keys():
-                tokens.append(Token(TOKENS.__dict__[token.upper()], token))
-            else:
-                tokens.append(
-                    Token(TOKENS.IDENTIFIER, token, TOKENS.IDENTIFIER))
+                    
+                    Token(TOKENS.IDENTIFIER, token, TOKENS.IDENTIFIER)
 
         # Handle string literals
         elif character == '\"':

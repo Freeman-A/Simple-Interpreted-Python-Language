@@ -215,6 +215,7 @@ def binaryNotEqual(stack):
     right = replaceIdentifier(stack)
     left = replaceIdentifier(stack)
 
+
     try:
         if left.type == TOKENS.STRING and right.type == TOKENS.STRING:
             result = left.value != right.value
@@ -222,7 +223,7 @@ def binaryNotEqual(stack):
             result = int(left.value) != int(right.value)
         elif left.type == TOKENS.FLOAT and right.type == TOKENS.FLOAT:
             result = float(left.value) != float(right.value)
-        elif (left.type == TOKENS.BOOLEANTRUE or left.type == TOKENS.BOOLEANFALSE) and \
+        elif (left.type == TOKENS.BOOLEANTRUE or left.type == TOKENS.BOOLEANFALSE) or \
              (right.type == TOKENS.BOOLEANTRUE or right.type == TOKENS.BOOLEANFALSE):
             result = right.type != left.type
         elif (left.type == TOKENS.INTEGER or left.type == TOKENS.FLOAT) and \
@@ -246,8 +247,7 @@ def binaryNotEqual(stack):
         else:
             result = True
 
-        stack.append(Token(
-            TOKENS.BOOLEANTRUE if result else TOKENS.BOOLEANFALSE, result, TOKENS.VALUE))
+        stack.append(Token(TOKENS.BOOLEANTRUE if result else TOKENS.BOOLEANFALSE, result, TOKENS.VALUE))
     except Exception as e:
         stack.append(Token(TOKENS.STRING, str(e), TOKENS.VALUE))
 

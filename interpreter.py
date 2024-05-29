@@ -28,9 +28,14 @@ def evaluator(rpn):
                 operators.binaryEquality(stack)
             elif token.type == TOKENS.NOTEQUAL:
                 operators.binaryNotEqual(stack)
+            elif token.type == TOKENS.AND: 
+                operators.binaryAND(stack)
+            elif token.type == TOKENS.OR: 
+                operators.binaryOR(stack)
             elif token.type == TOKENS.GREATER:
                 operators.binaryGreater(stack)
             elif token.type == TOKENS.LESS:
+            
                 operators.binaryLess(stack)
         elif token.type == TOKENS.TERMINATOR:
             # Handle terminator tokens, pop the stack and process result
